@@ -41,11 +41,11 @@ window.addEventListener('load', ()=>{
             this.frameY = 0;
             this.speed = 0;
             this.vy = 0;
-            this.weight = 0;
+            this.weight = 1;
         }
         draw(context) {
-            context.fillStyle = 'white';
-            context.fillRect(this.x, this.y, this.width, this.height);
+            //context.fillStyle = 'white';
+            //context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
         }
         update(input) {
@@ -109,25 +109,38 @@ window.addEventListener('load', ()=>{
             this.x = this.gameWidth;
             this.y = gameHeight - this.height;
             this.frameX = 0;
+            this.maxFrame = 5;
+            this.fps = 20;
+            this.frameTimer = 0;
+            this.frameInterval = 1000/this.fps;
+            this.speed = 8;
         }
         draw(context) {
-            context.drawImage(this.image, 0 * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.y);
+            context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.y);
         }
-        update() {
-            this.x--;
+        update(deltaTime) {
+            if (this.frameTimer > this.frameInterval) {
+                if(this.frameX < this.maxFrame) this.frameX = 0;
+                else this.frame++;
+                this.x-= this.speed;
+            } else {
+                this.frameTimer += deltaTime;
+            }
+            this.x -= this.speed;
         }
     }
-    enemies.push(new Enemy(canvas.width, canvas.height));
+
     function handleEnemies(deltaTime) {
-        if (enemyTimer > enemyInterval) {
+        if (enemyTimer > enemyInterval + randomEnemyInterval) {
             enemies.push(new Enemy(canvas.width, canvas.height));
+            randomEnemyInterval = Math.random() * 1000 + 500;
             enemyTimer = 0;
         } else {
             enemyTimer += deltaTime;
         }
         enemies.forEach(enemy => {
             enemy.draw(ctx);
-            enemy.update();
+            enemy.update(deltaTime);
         })
     }
 
@@ -142,6 +155,7 @@ window.addEventListener('load', ()=>{
     let lastTime = 0;
     let enemyTimer = 0;
     let enemyInterval = 1000;
+    let randomEnemyInterval = Math.random() * 1000 + 500;
     
     function animate(timeStamp) {
         const deltaTime = timeStamp - lastTime;
@@ -155,5 +169,4 @@ window.addEventListener('load', ()=>{
         requestAnimationFrame(animate);
     }
     animate(0);
-
 });
