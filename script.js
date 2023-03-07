@@ -49,6 +49,8 @@ window.addEventListener('load', ()=>{
             this.weight = 1;
         }
         draw(context) {
+            context.strokeStyle = 'white'
+            context.strokeRect(this.x, this.y, this.width, this.height);
             //context.fillStyle = 'white';
             //context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
@@ -134,7 +136,9 @@ window.addEventListener('load', ()=>{
             this.markedForDeletion = false;
         }
         draw(context) {
-            context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.y);
+            context.strokeStyle = 'white'
+            context.strokeRect(this.x, this.y, this.width, this.height);
+            context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.height);
         }
         update(deltaTime) {
             if (this.frameTimer > this.frameInterval) {
@@ -148,7 +152,7 @@ window.addEventListener('load', ()=>{
             if(this.x < 0 - this.width) {
                 this.markedForDeletion = true;
                 score++;
-            }
+            } 
         }
     }
 
@@ -164,13 +168,15 @@ window.addEventListener('load', ()=>{
             enemy.draw(ctx);
             enemy.update(deltaTime);
         })
-        enemies = enemies.filter(enemy => enemy.markedForDeletion);
+        enemies = enemies.filter(enemy => !enemy.markedForDeletion);
     }
 
     function displayStatusText(context) {
-        context.fillStyle = 'black';
         context.font = '40px Helvetica';
+        context.fillStyle = 'black';
         context.fillText('Score: ' + score, 20, 50);
+        context.fillStyle = 'white';
+        context.fillText('Score: ' + score, 22, 52);
     }
 
     const input = new InputHandler();
