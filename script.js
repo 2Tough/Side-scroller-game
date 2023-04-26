@@ -36,7 +36,7 @@ window.addEventListener('load', ()=>{
             this.gameHeight = gameHeight;
             this.width = 200;
             this.height = 200;
-            this.x = 0;
+            this.x = 100;
             this.y = this.gameHeight - this.height;
             this.image = document.getElementById('playerImage');
             this.frameX = 0;
@@ -48,6 +48,12 @@ window.addEventListener('load', ()=>{
             this.speed = 0;
             this.vy = 0;
             this.weight = 1;
+        }
+        restart() {
+            this.x = 100;
+            this.y = this.gameHeight - this.height;
+            this.maxFrame = 8;
+            this.frameY = 0;
         }
         draw(context) {
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
@@ -122,12 +128,15 @@ window.addEventListener('load', ()=>{
             this.x -= this.speed;
             if (this.x < 0 - this.width) this.x = 0;
         }
+        restart() {
+            this.x = 0;
+        }
     }
 
     class Enemy {
         constructor(gameWidth, gameHeight) {
-            this.gameWidth = this.gameWidth;
-            this.gameHeight = this.gameHeight;
+            this.gameWidth = gameWidth;
+            this.gameHeight = gameHeight;
             this.width = 160;
             this.height = 119;
             this.image = document.getElementById('enemyImage');
@@ -163,7 +172,7 @@ window.addEventListener('load', ()=>{
     function handleEnemies(deltaTime) {
         if (enemyTimer > enemyInterval + randomEnemyInterval) {
             enemies.push(new Enemy(canvas.width, canvas.height));
-
+            console.log(enemies);
             randomEnemyInterval = Math.random() * 1000 + 500;
             enemyTimer = 0;
         } else {
@@ -191,6 +200,15 @@ window.addEventListener('load', ()=>{
         }
     }
 
+    function restartGame() {
+        player.restart()
+        background.restart()
+        enemies = [];
+        score = 0;
+        gameOver = false;
+    
+    }
+
     const input = new InputHandler();
     const player = new Player(canvas.width, canvas.height);
     const background = new Background(canvas.width, canvas.height);
@@ -205,7 +223,7 @@ window.addEventListener('load', ()=>{
         lastTime = timeStamp;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         background.draw(ctx);
-        //background.update();
+        background.update();
         player.draw(ctx);
         player.update(input, deltaTime, enemies);
         handleEnemies(deltaTime);
