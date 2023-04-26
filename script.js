@@ -1,7 +1,7 @@
 window.addEventListener('load', ()=>{
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
-    canvas.width = 800;
+    canvas.width = 1400;
     canvas.height = 720;
     let enemies = [];
     let score = 0;
@@ -41,18 +41,16 @@ window.addEventListener('load', ()=>{
             this.image = document.getElementById('playerImage');
             this.frameX = 0;
             this.maxFrame = 8;
+            this.frameY = 0;
             this.fps = 20;
             this.frameTimer = 0;
             this.frameInterval = 1000/this.fps;
-            this.frameY = 0;
             this.speed = 0;
             this.vy = 0;
             this.weight = 1;
         }
         draw(context) {
-            
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
-
         }
         update(input, deltaTime, enemies) {
             // collision detection
@@ -144,16 +142,6 @@ window.addEventListener('load', ()=>{
             this.markedForDeletion = false;
         }
         draw(context) {
-            context.strokeStyle = 'white'
-            context.strokeRect(this.x, this.y, this.width, this.height);
-            context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.height);
-            context.beginPath();
-            context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, Math.PI * 2);
-            context.stroke();
-            context.strokeStyle = 'blue'
-            context.beginPath();
-            context.arc(this.x, this.y + this.height/2, 0, Math.PI * 2);
-            context.stroke();
             context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.height);
         }
         update(deltaTime) {
@@ -175,6 +163,7 @@ window.addEventListener('load', ()=>{
     function handleEnemies(deltaTime) {
         if (enemyTimer > enemyInterval + randomEnemyInterval) {
             enemies.push(new Enemy(canvas.width, canvas.height));
+
             randomEnemyInterval = Math.random() * 1000 + 500;
             enemyTimer = 0;
         } else {
